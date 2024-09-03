@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Zoom Example</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            transition: transform 0.2s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <img src="https://via.placeholder.com/600" alt="Test Image" id="test-image">
+
+    <script>
+        function initializeImageScaling(img) {
+            let initialScale = 1;
+            let initialDistance = null;
+
+            if ('ontouchstart' in window) {
+                img.addEventListener('touchstart', function (event) {
+                    if (event.touches.length === 2) {
+                        initialDistance = getDistance(event.touches[0], event.touches[1]);
+                        initialScale = parseFloat(getComputedStyle(img).transform.split(',')[0].split('(')[1]) || 1;
+                    }
+                });
+
+                img.addEventListener('touchmove', function (event) {
+                    if (event.touches.length === 2) {
+                        const currentDistance = getDistance(event.touches[0], event.touches[1]);
+                        if (initialDistance) {
+                            const scale = initialScale * (currentDistance / initialDistance);
+                            img.style.transform = `scale(${scale})`;
+                        }
+                    }
+                });
+
+                img.addEventListener('touchend', function (event) {
+                    if (event.touches.length < 2) {
+                        initialDistance = null;
+                    }
+                });
+            }
+
+            function getDistance(touch1, touch2) {
+                const dx = touch1.pageX - touch2.pageX;
+                const dy = touch1.pageY - touch2.pageY;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const img = document.getElementById('test-image');
+            initializeImageScaling(img);
+        });
+    </script>
+</body>
+</html>
