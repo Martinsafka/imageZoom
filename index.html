@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Image Zoom Example</title>
     <style>
         body {
@@ -12,12 +12,14 @@
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
+            touch-action: none; /* Disable default touch actions (zoom and scroll) */
         }
 
         img {
             max-width: 100%;
             height: auto;
             transition: transform 0.2s ease-out;
+            touch-action: manipulation; /* Allow manipulation actions (like pinch-zoom) on the image */
         }
     </style>
 </head>
@@ -64,6 +66,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             const img = document.getElementById('test-image');
             initializeImageScaling(img);
+        });
+
+        // Prevent pinch-to-zoom on the entire page
+        document.addEventListener('gesturestart', function (event) {
+            event.preventDefault();
         });
     </script>
 </body>
